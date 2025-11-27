@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XO Game - Tic Tac Toe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .game-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        .status {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .room-info {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .room-id {
+            font-family: monospace;
+            background: #e0e0e0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 30px 0;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 10px;
+            font-size: 3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .cell:hover:not(:disabled) {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .cell:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .cell.x {
+            color: #667eea;
+        }
+
+        .cell.o {
+            color: #764ba2;
+        }
+
+        .controls {
+            margin-top: 30px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .waiting {
+            color: #ff9800;
+        }
+
+        .playing {
+            color: #4caf50;
+        }
+
+        .winner {
+            color: #f44336;
+            font-size: 1.5em;
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 10px;
+        }
+
+        .draw {
+            color: #2196f3;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        input[type="text"] {
+            padding: 10px 15px;
+            font-size: 1em;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin: 10px 0;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .cell {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>XO Game</h1>
+        <p class="subtitle">Tic Tac Toe with Real-time Multiplayer</p>
+        
+        <div class="game-info">
+            <div class="status" id="status">Connecting...</div>
+            <div class="room-info" id="roomInfo" style="display: none;">
+                <div>Room ID:</div>
+                <div class="room-id" id="roomId"></div>
+                <div style="margin-top: 10px; font-size: 0.9em;">Share this ID with a friend to play together!</div>
+            </div>
+        </div>
+
+        <div id="joinSection">
+            <div style="margin: 20px 0;">
+                <button onclick="createNewGame()" style="width: 100%; max-width: 300px; margin-bottom: 20px; font-size: 1.1em; padding: 15px;">
+                    🎮 Create New Game
+                </button>
+            </div>
+            <div style="margin: 20px 0; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+                <p style="margin-bottom: 10px; color: #666;">Or join an existing game:</p>
+                <div class="input-group">
+                    <input type="text" id="roomInput" placeholder="Enter Room ID">
+                    <button onclick="joinExistingGame()">Join Game</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="gameSection" style="display: none;">
+            <div class="board" id="board">
+                <button class="cell" data-index="0" onclick="makeMove(0)"></button>
+                <button class="cell" data-index="1" onclick="makeMove(1)"></button>
+                <button class="cell" data-index="2" onclick="makeMove(2)"></button>
+                <button class="cell" data-index="3" onclick="makeMove(3)"></button>
+                <button class="cell" data-index="4" onclick="makeMove(4)"></button>
+                <button class="cell" data-index="5" onclick="makeMove(5)"></button>
+                <button class="cell" data-index="6" onclick="makeMove(6)"></button>
+                <button class="cell" data-index="7" onclick="makeMove(7)"></button>
+                <button class="cell" data-index="8" onclick="makeMove(8)"></button>
+            </div>
+            <div class="controls">
+                <button onclick="resetGame()">Reset Game</button>
+                <button onclick="newGame()">New Game</button>
+            </div>
+        </div>
+
+        <div id="winnerMessage" style="display: none;"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let currentRoomId = null;
+        let mySymbol = null;
+        let isMyTurn = false;
+        let gameBoard = Array(9).fill(null);
+
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            updateStatus('Connected! Create or join a game', 'waiting');
+            document.getElementById('joinSection').style.display = 'block';
+        });
+
+        socket.on('game-joined', (data) => {
+            currentRoomId = data.roomId;
+            mySymbol = data.symbol;
+            isMyTurn = data.isYourTurn;
+            
+            document.getElementById('roomId').textContent = currentRoomId;
+            document.getElementById('roomInfo').style.display = 'block';
+            document.getElementById('joinSection').style.display = 'none';
+            document.getElementById('gameSection').style.display = 'block';
+            document.getElementById('winnerMessage').style.display = 'none';
+            
+            updateStatus(`You are ${mySymbol}. ${isMyTurn ? 'Your turn!' : 'Waiting for opponent...'}`, isMyTurn ? 'playing' : 'waiting');
+            updateBoard();
+        });
+
+        socket.on('opponent-joined', (data) => {
+            isMyTurn = data.isYourTurn;
+            updateStatus(`Opponent joined! ${isMyTurn ? 'Your turn!' : 'Opponent\'s turn'}`, isMyTurn ? 'playing' : 'waiting');
+        });
+
+        socket.on('game-start', (data) => {
+            isMyTurn = data.currentPlayer === mySymbol;
+            updateStatus(`${isMyTurn ? 'Your turn!' : 'Opponent\'s turn'}`, isMyTurn ? 'playing' : 'waiting');
+        });
+
+        socket.on('move-made', (data) => {
+            gameBoard = data.board;
+            isMyTurn = data.currentPlayer === mySymbol;
+            updateBoard();
+            updateStatus(`${isMyTurn ? 'Your turn!' : 'Opponent\'s turn'}`, isMyTurn ? 'playing' : 'waiting');
+        });
+
+        socket.on('game-over', (data) => {
+            gameBoard = data.board;
+            updateBoard();
+            disableBoard();
+            
+            const winnerDiv = document.getElementById('winnerMessage');
+            if (data.winner === 'draw') {
+                winnerDiv.innerHTML = '<div class="winner draw">It\'s a Draw!</div>';
+            } else {
+                const winnerText = data.winner === mySymbol ? 'You Win! 🎉' : 'You Lose! 😢';
+                winnerDiv.innerHTML = `<div class="winner">${winnerText}</div>`;
+            }
+            winnerDiv.style.display = 'block';
+            updateStatus('Game Over', 'waiting');
+        });
+
+        socket.on('game-reset', (data) => {
+            gameBoard = Array(9).fill(null);
+            isMyTurn = data.currentPlayer === mySymbol;
+            updateBoard();
+            enableBoard();
+            document.getElementById('winnerMessage').style.display = 'none';
+            updateStatus(`${isMyTurn ? 'Your turn!' : 'Opponent\'s turn'}`, isMyTurn ? 'playing' : 'waiting');
+        });
+
+        socket.on('opponent-left', () => {
+            updateStatus('Opponent left the game', 'waiting');
+            disableBoard();
+        });
+
+        socket.on('join-error', (data) => {
+            alert(data.message);
+        });
+
+        socket.on('move-error', (data) => {
+            alert(data.message);
+        });
+
+        function createNewGame() {
+            socket.emit('join-game', null);
+        }
+
+        function joinExistingGame() {
+            const roomInput = document.getElementById('roomInput').value.trim();
+            if (!roomInput) {
+                alert('Please enter a Room ID to join');
+                return;
+            }
+            socket.emit('join-game', roomInput);
+        }
+
+        function makeMove(cellIndex) {
+            if (!isMyTurn || gameBoard[cellIndex] !== null || !currentRoomId) {
+                return;
+            }
+            socket.emit('make-move', { roomId: currentRoomId, cellIndex });
+        }
+
+        function resetGame() {
+            if (currentRoomId) {
+                socket.emit('reset-game', currentRoomId);
+            }
+        }
+
+        function newGame() {
+            currentRoomId = null;
+            mySymbol = null;
+            isMyTurn = false;
+            gameBoard = Array(9).fill(null);
+            document.getElementById('roomInfo').style.display = 'none';
+            document.getElementById('gameSection').style.display = 'none';
+            document.getElementById('joinSection').style.display = 'block';
+            document.getElementById('roomInput').value = '';
+            document.getElementById('winnerMessage').style.display = 'none';
+            updateStatus('Create or join a game', 'waiting');
+        }
+
+        function updateBoard() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach((cell, index) => {
+                cell.textContent = gameBoard[index] || '';
+                cell.className = 'cell';
+                if (gameBoard[index]) {
+                    cell.classList.add(gameBoard[index].toLowerCase());
+                }
+                cell.disabled = gameBoard[index] !== null || !isMyTurn;
+            });
+        }
+
+        function enableBoard() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                const index = parseInt(cell.getAttribute('data-index'));
+                if (!gameBoard[index]) {
+                    cell.disabled = !isMyTurn;
+                }
+            });
+        }
+
+        function disableBoard() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => cell.disabled = true);
+        }
+
+        function updateStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+
+        // Allow Enter key to join game
+        document.getElementById('roomInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                joinGame();
+            }
+        });
+    </script>
+</body>
+</html>
+
