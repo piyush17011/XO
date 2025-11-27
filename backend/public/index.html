@@ -18,7 +18,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .container {
@@ -35,12 +36,14 @@
             color: #667eea;
             margin-bottom: 10px;
             font-size: 2.5em;
+            word-wrap: break-word;
         }
 
         .subtitle {
             color: #666;
             margin-bottom: 30px;
             font-size: 1.1em;
+            word-wrap: break-word;
         }
 
         .game-info {
@@ -48,6 +51,7 @@
             padding: 15px;
             background: #f5f5f5;
             border-radius: 10px;
+            word-wrap: break-word;
         }
 
         .status {
@@ -55,12 +59,14 @@
             font-weight: bold;
             color: #333;
             margin-bottom: 10px;
+            word-wrap: break-word;
         }
 
         .room-info {
             font-size: 0.9em;
             color: #666;
             margin-top: 10px;
+            word-wrap: break-word;
         }
 
         .room-id {
@@ -70,6 +76,8 @@
             border-radius: 5px;
             display: inline-block;
             margin-top: 5px;
+            word-break: break-all;
+            font-size: 0.85em;
         }
 
         .board {
@@ -80,6 +88,7 @@
             max-width: 300px;
             margin-left: auto;
             margin-right: auto;
+            width: 100%;
         }
 
         .cell {
@@ -95,11 +104,20 @@
             align-items: center;
             justify-content: center;
             color: #333;
+            min-height: 60px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         .cell:hover:not(:disabled) {
             background: #e0e0e0;
             transform: scale(1.05);
+        }
+
+        @media (hover: none) {
+            .cell:hover:not(:disabled) {
+                transform: none;
+            }
         }
 
         .cell:disabled {
@@ -129,6 +147,9 @@
             cursor: pointer;
             transition: transform 0.2s ease;
             margin: 5px;
+            min-height: 44px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         button:hover {
@@ -138,6 +159,12 @@
 
         button:active {
             transform: translateY(0);
+        }
+
+        @media (hover: none) {
+            button:hover {
+                transform: none;
+            }
         }
 
         button:disabled {
@@ -172,13 +199,17 @@
         }
 
         input[type="text"] {
-            padding: 10px 15px;
+            padding: 12px 15px;
             font-size: 1em;
             border: 2px solid #ddd;
             border-radius: 10px;
             width: 100%;
             max-width: 300px;
             margin: 10px 0;
+            min-height: 44px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
         }
 
         input[type="text"]:focus {
@@ -186,17 +217,198 @@
             border-color: #667eea;
         }
 
-        @media (max-width: 600px) {
+        /* Tablet and below */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+
             .container {
-                padding: 20px;
+                padding: 25px 20px;
+                border-radius: 15px;
+                max-width: 100%;
             }
 
             h1 {
                 font-size: 2em;
+                margin-bottom: 8px;
+            }
+
+            .subtitle {
+                font-size: 0.95em;
+                margin-bottom: 20px;
+            }
+
+            .game-info {
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+
+            .status {
+                font-size: 1.1em;
+            }
+
+            .board {
+                gap: 8px;
+                margin: 20px 0;
+                max-width: 100%;
             }
 
             .cell {
                 font-size: 2.5em;
+                min-height: 70px;
+            }
+
+            button {
+                padding: 12px 25px;
+                font-size: 0.95em;
+                width: 100%;
+                max-width: 300px;
+                margin: 8px 0;
+            }
+
+            .controls {
+                margin-top: 20px;
+            }
+
+            .winner {
+                font-size: 1.3em;
+                padding: 12px;
+                margin-top: 15px;
+            }
+        }
+
+        /* Mobile phones */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+                padding-top: 10px;
+            }
+
+            .container {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+
+            h1 {
+                font-size: 1.75em;
+                margin-bottom: 5px;
+            }
+
+            .subtitle {
+                font-size: 0.9em;
+                margin-bottom: 15px;
+            }
+
+            .game-info {
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+
+            .status {
+                font-size: 1em;
+                margin-bottom: 8px;
+            }
+
+            .room-info {
+                font-size: 0.85em;
+            }
+
+            .room-id {
+                font-size: 0.75em;
+                padding: 4px 8px;
+                display: block;
+                margin-top: 8px;
+            }
+
+            .board {
+                gap: 6px;
+                margin: 15px 0;
+            }
+
+            .cell {
+                font-size: 2em;
+                min-height: 60px;
+                border-radius: 8px;
+            }
+
+            button {
+                padding: 14px 20px;
+                font-size: 0.9em;
+                border-radius: 20px;
+                margin: 6px 0;
+            }
+
+            .input-group {
+                margin: 15px 0;
+            }
+
+            input[type="text"] {
+                padding: 12px;
+                font-size: 0.95em;
+                margin: 8px 0;
+            }
+
+            .winner {
+                font-size: 1.2em;
+                padding: 10px;
+                margin-top: 15px;
+            }
+
+            .controls {
+                margin-top: 15px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .controls button {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        /* Very small phones */
+        @media (max-width: 360px) {
+            .container {
+                padding: 15px 10px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .cell {
+                font-size: 1.75em;
+                min-height: 55px;
+            }
+
+            button {
+                padding: 12px 15px;
+                font-size: 0.85em;
+            }
+        }
+
+        /* Landscape orientation on mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            body {
+                padding: 5px;
+            }
+
+            .container {
+                padding: 15px;
+                max-width: 600px;
+            }
+
+            .board {
+                max-width: 250px;
+            }
+
+            .cell {
+                font-size: 2em;
+                min-height: 50px;
             }
         }
     </style>
