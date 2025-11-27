@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -5,15 +6,27 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
+
+// Configure Socket.io for production
 const io = socketIo(server, {
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
-  }
+    origin: process.env.CORS_ORIGIN || "*",
+    methods: ["GET", "POST"],
+    credentials: true
+  },
+  transports: ['websocket', 'polling']
 });
+
+// Trust proxy (important for hosting platforms like Heroku, Railway, etc.)
+app.set('trust proxy', 1);
 
 // Serve static files from public directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Health check endpoint for hosting platforms
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // Serve the main HTML file
 app.get('/', (req, res) => {
@@ -186,7 +199,12 @@ function checkWinner(board) {
 }
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`XO Game Server is running on port ${PORT}`);
-  console.log(`Open http://localhost:${PORT} in your browser`);
+  console.log(`Environment: ${NODE_ENV}`);
+  if (NODE_ENV === 'development') {
+    console.log(`Open http://localhost:${PORT} in your browser`);
+  }
 });
