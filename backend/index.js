@@ -66,8 +66,9 @@ io.on('connection', (socket) => {
     }
 
     if (!trimmedRoomId || trimmedRoomId === '') {
-      // Create new game
-      const newRoomId = `room-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      // Create new game - shorter room ID
+      const randomPart = Math.random().toString(36).substr(2, 6).toUpperCase();
+      const newRoomId = randomPart;
       socket.join(newRoomId);
       games.set(newRoomId, {
         board: Array(9).fill(null),
