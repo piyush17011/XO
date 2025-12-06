@@ -14,44 +14,71 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 10px;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
         .container {
             background: white;
-            border-radius: 20px;
-            padding: 40px;
+            border-radius: 25px;
+            padding: 25px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-width: 500px;
             width: 100%;
             text-align: center;
+            position: relative;
+            max-height: 95vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
         }
 
         h1 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 2.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+            font-size: 2.2em;
             word-wrap: break-word;
+            font-weight: 800;
+            letter-spacing: -1px;
         }
 
         .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 1.1em;
+            color: #888;
+            margin-bottom: 15px;
+            font-size: 0.95em;
             word-wrap: break-word;
+            font-weight: 500;
         }
 
         .game-info {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f5f5f5;
-            border-radius: 10px;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            border-radius: 12px;
             word-wrap: break-word;
+            border: 1px solid rgba(102, 126, 234, 0.1);
         }
 
         .status {
@@ -118,35 +145,45 @@
         .board {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 30px 0;
-            max-width: 300px;
+            gap: 8px;
+            margin: 20px 0;
+            max-width: 280px;
             margin-left: auto;
             margin-right: auto;
             width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            border-radius: 15px;
         }
 
         .cell {
             aspect-ratio: 1;
-            background: #f0f0f0;
-            border: none;
-            border-radius: 10px;
-            font-size: 3em;
-            font-weight: bold;
+            background: white;
+            border: 2px solid #e8eaf6;
+            border-radius: 12px;
+            font-size: 2.8em;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #333;
-            min-height: 60px;
+            min-height: 70px;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .cell:hover:not(:disabled) {
-            background: #e0e0e0;
-            transform: scale(1.05);
+            background: #f5f7ff;
+            border-color: #667eea;
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .cell:active:not(:disabled) {
+            transform: scale(0.95);
         }
 
         @media (hover: none) {
@@ -162,34 +199,42 @@
 
         .cell.x {
             color: #667eea;
+            text-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
         }
 
         .cell.o {
             color: #764ba2;
+            text-shadow: 0 2px 10px rgba(118, 75, 162, 0.3);
         }
 
         .controls {
-            margin-top: 30px;
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 12px 30px;
-            font-size: 1em;
-            border-radius: 25px;
+            padding: 12px 25px;
+            font-size: 0.95em;
+            border-radius: 20px;
             cursor: pointer;
-            transition: transform 0.2s ease;
-            margin: 5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0;
             min-height: 44px;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
         button:active {
@@ -216,17 +261,126 @@
             color: #4caf50;
         }
 
+        #winnerBackdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #winnerMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            animation: winnerPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            max-width: 90%;
+            width: auto;
+        }
+
+        @keyframes winnerPopIn {
+            0% {
+                transform: translate(-50%, -50%) scale(0.3);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
         .winner {
-            color: #f44336;
-            font-size: 1.5em;
-            margin-top: 20px;
-            padding: 15px;
-            background: #fff3cd;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 2em;
+            font-weight: 800;
+            padding: 25px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+            text-align: center;
+            letter-spacing: 1px;
+            animation: pulse 2s infinite;
+            pointer-events: auto;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+            }
+            50% {
+                box-shadow: 0 10px 50px rgba(102, 126, 234, 0.6);
+            }
+        }
+
+        .winner::before {
+            content: '🎉';
+            display: block;
+            font-size: 3em;
+            margin-bottom: 10px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .draw {
-            color: #2196f3;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            font-size: 2em;
+            font-weight: 800;
+            padding: 25px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(79, 172, 254, 0.4);
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .draw::before {
+            content: '🤝';
+            display: block;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .winner-lose {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            font-size: 2em;
+            font-weight: 800;
+            padding: 25px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(250, 112, 154, 0.4);
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .winner-lose::before {
+            content: '😢';
+            display: block;
+            font-size: 3em;
+            margin-bottom: 10px;
         }
 
         .input-group {
@@ -308,10 +462,13 @@
                 margin-top: 20px;
             }
 
-            .winner {
-                font-size: 1.3em;
-                padding: 12px;
-                margin-top: 15px;
+            .winner, .draw, .winner-lose {
+                font-size: 1.5em;
+                padding: 20px 25px;
+            }
+
+            .winner::before, .draw::before, .winner-lose::before {
+                font-size: 2em;
             }
         }
 
@@ -514,6 +671,7 @@
             </div>
         </div>
 
+        <div id="winnerBackdrop"></div>
         <div id="winnerMessage" style="display: none;"></div>
     </div>
 
@@ -541,6 +699,7 @@
             document.getElementById('joinSection').style.display = 'none';
             document.getElementById('gameSection').style.display = 'block';
             document.getElementById('winnerMessage').style.display = 'none';
+            document.getElementById('winnerBackdrop').style.display = 'none';
             
             // Generate QR code with a small delay to ensure library is loaded
             setTimeout(() => {
@@ -574,14 +733,25 @@
             disableBoard();
             
             const winnerDiv = document.getElementById('winnerMessage');
+            const backdrop = document.getElementById('winnerBackdrop');
+            
             if (data.winner === 'draw') {
-                winnerDiv.innerHTML = '<div class="winner draw">It\'s a Draw!</div>';
+                winnerDiv.innerHTML = '<div class="draw">It\'s a Draw!</div>';
+            } else if (data.winner === mySymbol) {
+                winnerDiv.innerHTML = '<div class="winner">You Win!</div>';
             } else {
-                const winnerText = data.winner === mySymbol ? 'You Win! 🎉' : 'You Lose! 😢';
-                winnerDiv.innerHTML = `<div class="winner">${winnerText}</div>`;
+                winnerDiv.innerHTML = '<div class="winner-lose">You Lose!</div>';
             }
+            
+            backdrop.style.display = 'block';
             winnerDiv.style.display = 'block';
             updateStatus('Game Over', 'waiting');
+            
+            // Click backdrop to close
+            backdrop.onclick = function() {
+                backdrop.style.display = 'none';
+                winnerDiv.style.display = 'none';
+            };
         });
 
         socket.on('game-reset', (data) => {
@@ -590,6 +760,7 @@
             updateBoard();
             enableBoard();
             document.getElementById('winnerMessage').style.display = 'none';
+            document.getElementById('winnerBackdrop').style.display = 'none';
             updateStatus(`${isMyTurn ? 'Your turn!' : 'Opponent\'s turn'}`, isMyTurn ? 'playing' : 'waiting');
         });
 
@@ -642,6 +813,7 @@
             document.getElementById('joinSection').style.display = 'block';
             document.getElementById('roomInput').value = '';
             document.getElementById('winnerMessage').style.display = 'none';
+            document.getElementById('winnerBackdrop').style.display = 'none';
             updateStatus('Create or join a game', 'waiting');
         }
 
