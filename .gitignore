@@ -1,3 +1,6 @@
 node_modules/
 .env
+PROJECT_EXPLANATION.md 
+public/index_simplified.html
+
 

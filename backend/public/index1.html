@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XO Game - Tic Tac Toe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .container {
+            background: #000;
+            border: 3px solid #ffcc00;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: #ffcc00;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #ccc;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .game-info {
+            margin: 15px 0;
+            padding: 10px;
+            background: #1a1a1a;
+            border: 2px solid #ffcc00;
+            border-radius: 8px;
+        }
+
+        .status {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ffcc00;
+            margin-bottom: 10px;
+        }
+
+        .room-info {
+            font-size: 0.9em;
+            color: #ccc;
+            margin-top: 10px;
+        }
+
+        .room-id {
+            background: #1a1a1a;
+            padding: 8px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 5px;
+            font-family: monospace;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #ffcc00;
+            border: 2px solid #ffcc00;
+        }
+
+        .qr-container {
+            margin: 15px 0;
+            padding: 15px;
+            background: #1a1a1a;
+            border: 2px solid #ffcc00;
+            border-radius: 8px;
+        }
+
+        .qr-code {
+            background: #000;
+            padding: 10px;
+            border: 2px solid #ffcc00;
+            border-radius: 5px;
+            margin: 10px 0;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 250px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .qr-label {
+            font-size: 0.9em;
+            color: #ffcc00;
+            margin-top: 10px;
+        }
+
+        .turn-indicators {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+
+        .turn-indicator {
+            padding: 8px 15px;
+            border: 2px solid #666;
+            color: #666;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .turn-indicator.active {
+            border-color: #ffcc00;
+            color: #ffcc00;
+            background: rgba(255, 204, 0, 0.1);
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 20px auto;
+            max-width: 280px;
+            padding: 10px;
+            background: #1a1a1a;
+            border: 3px solid #ffcc00;
+            border-radius: 8px;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            background: #000;
+            border: 3px solid #ffcc00;
+            border-radius: 8px;
+            font-size: 2.5em;
+            font-weight: 800;
+            cursor: pointer;
+            color: #ffcc00;
+            min-height: 70px;
+        }
+
+        .cell:hover:not(:disabled) {
+            background: #1a1a1a;
+        }
+
+        .cell:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #ffcc00;
+            color: #000;
+            border: 3px solid #ffcc00;
+            padding: 10px 20px;
+            font-size: 0.95em;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            min-height: 44px;
+        }
+
+        button:hover {
+            background: #ffd700;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #winnerBackdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            display: none;
+        }
+
+        #winnerMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .winner, .draw, .winner-lose {
+            background: #ffcc00;
+            color: #000;
+            font-size: 1.8em;
+            font-weight: 800;
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-align: center;
+            border: 3px solid #ffcc00;
+            pointer-events: auto;
+        }
+
+        .winner-lose {
+            background: #1a1a1a;
+            color: #ffcc00;
+        }
+
+        .winner::before {
+            content: '🎉 ';
+        }
+
+        .draw::before {
+            content: '🤝 ';
+        }
+
+        .winner-lose::before {
+            content: '😢 ';
+        }
+
+        input[type="text"] {
+            padding: 10px 15px;
+            font-size: 1em;
+            border: 2px solid #ffcc00;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 300px;
+            margin: 10px 0;
+            min-height: 44px;
+            background: #1a1a1a;
+            color: #ffcc00;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #ffcc00;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>XO Game</h1>
+        <p class="subtitle">Real-time Multiplayer Tic Tac Toe</p>
+        
+        <div class="game-info">
+            <div class="status" id="status">Connecting...</div>
+            <div class="room-info" id="roomInfo" style="display: none;">
+                <div>Room ID:</div>
+                <div class="room-id" id="roomId"></div>
+                <div style="margin-top: 15px; font-size: 0.9em;">Share this ID with a friend!</div>
+                <div class="qr-container" id="qrContainer">
+                    <div class="qr-label">Or scan QR code:</div>
+                    <div class="qr-code" id="qrCode"></div>
+                    <div class="qr-label">Scan to join</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="joinSection">
+            <div style="margin: 20px 0;">
+                <button onclick="createNewGame()" style="width: 100%; max-width: 300px; margin-bottom: 20px; font-size: 1.1em; padding: 15px;">
+                    🎮 Create New Game
+                </button>
+            </div>
+            <div style="margin: 20px 0; padding-top: 20px; border-top: 2px solid #555;">
+                <p style="margin-bottom: 10px; color: #999;">Or join existing game:</p>
+                <div class="input-group">
+                    <input type="text" id="roomInput" placeholder="Enter Room ID">
+                    <button onclick="joinExistingGame()">Join Game</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="gameSection" style="display: none;">
+            <div class="turn-indicators">
+                <div class="turn-indicator" id="yourTurnIndicator">Your Turn</div>
+                <div class="turn-indicator" id="opponentTurnIndicator">Opponent Turn</div>
+            </div>
+            <div class="board" id="board">
+                <button class="cell" data-index="0" onclick="makeMove(0)"></button>
+                <button class="cell" data-index="1" onclick="makeMove(1)"></button>
+                <button class="cell" data-index="2" onclick="makeMove(2)"></button>
+                <button class="cell" data-index="3" onclick="makeMove(3)"></button>
+                <button class="cell" data-index="4" onclick="makeMove(4)"></button>
+                <button class="cell" data-index="5" onclick="makeMove(5)"></button>
+                <button class="cell" data-index="6" onclick="makeMove(6)"></button>
+                <button class="cell" data-index="7" onclick="makeMove(7)"></button>
+                <button class="cell" data-index="8" onclick="makeMove(8)"></button>
+            </div>
+            <div class="controls">
+                <button onclick="playAgain()">Play Again</button>
+                <button onclick="newGame()">New Game</button>
+            </div>
+        </div>
+
+        <div id="winnerBackdrop"></div>
+        <div id="winnerMessage" style="display: none;"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let currentRoomId = null;
+        let mySymbol = null;
+        let isMyTurn = false;
+        let gameBoard = Array(9).fill(null);
+
+        socket.on('connect', () => {
+            console.log('Connected to server');
+            updateStatus('Connected! Create or join a game', 'waiting');
+            document.getElementById('joinSection').style.display = 'block';
+        });
+
+        socket.on('game-joined', (data) => {
+            currentRoomId = data.roomId;
+            mySymbol = data.symbol;
+            isMyTurn = data.isYourTurn;
+            
+            document.getElementById('roomId').textContent = currentRoomId;
+            document.getElementById('roomInfo').style.display = 'block';
+            document.getElementById('joinSection').style.display = 'none';
+            document.getElementById('gameSection').style.display = 'block';
+            document.getElementById('winnerMessage').style.display = 'none';
+            document.getElementById('winnerBackdrop').style.display = 'none';
+            
+            setTimeout(() => {
+                generateQRCode(currentRoomId);
+            }, 100);
+            
+            updateStatus(`You are ${mySymbol}. ${isMyTurn ? 'Your turn!' : 'Waiting for opponent...'}`, isMyTurn ? 'playing' : 'waiting');
+            updateBoard();
+        });
+
+        socket.on('opponent-joined', (data) => {
+            isMyTurn = data.isYourTurn;
+            updateStatus(`Opponent joined! ${isMyTurn ? 'Your turn!' : 'Opponent\'s turn'}`, isMyTurn ? 'playing' : 'waiting');
+        });
+
+        socket.on('game-start', (data) => {
+            isMyTurn = data.currentPlayer === mySymbol;
+            updateStatus(`${isMyTurn ? 'Your turn!' : 'Opponent\'s turn'}`, isMyTurn ? 'playing' : 'waiting');
+        });
+
+        socket.on('move-made', (data) => {
+            gameBoard = data.board;
+            isMyTurn = data.currentPlayer === mySymbol;
+            updateBoard();
+            updateStatus(`${isMyTurn ? 'Your turn!' : 'Opponent\'s turn'}`, isMyTurn ? 'playing' : 'waiting');
+        });
+
+        socket.on('game-over', (data) => {
+            gameBoard = data.board;
+            updateBoard();
+            disableBoard();
+            showWinnerMessage(data.winner);
+        });
+
+        socket.on('game-reset', (data) => {
+            gameBoard = Array(9).fill(null);
+            if (data.mySymbol) {
+                mySymbol = data.mySymbol;
+            }
+            isMyTurn = data.currentPlayer === mySymbol;
+            updateBoard();
+            enableBoard();
+            document.getElementById('winnerMessage').style.display = 'none';
+            document.getElementById('winnerBackdrop').style.display = 'none';
+            updateStatus(`${isMyTurn ? 'Your turn!' : 'Opponent\'s turn'}`, isMyTurn ? 'playing' : 'waiting');
+        });
+
+        socket.on('opponent-left', () => {
+            updateStatus('Opponent left the game', 'waiting');
+            disableBoard();
+        });
+
+        socket.on('join-error', (data) => {
+            alert(data.message);
+        });
+
+        function createNewGame() {
+            socket.emit('join-game', '');
+        }
+
+        function joinExistingGame() {
+            const roomId = document.getElementById('roomInput').value.trim();
+            if (!roomId) {
+                alert('Please enter a Room ID');
+                return;
+            }
+            socket.emit('join-game', roomId);
+        }
+
+        function makeMove(cellIndex) {
+            if (!isMyTurn || gameBoard[cellIndex] !== null || !currentRoomId) {
+                return;
+            }
+            socket.emit('make-move', { roomId: currentRoomId, cellIndex });
+            isMyTurn = false;
+        }
+
+        function playAgain() {
+            if (currentRoomId) {
+                socket.emit('reset-game', currentRoomId);
+            }
+        }
+
+        function newGame() {
+            currentRoomId = null;
+            mySymbol = null;
+            isMyTurn = false;
+            gameBoard = Array(9).fill(null);
+            document.getElementById('roomInfo').style.display = 'none';
+            document.getElementById('gameSection').style.display = 'none';
+            document.getElementById('joinSection').style.display = 'block';
+            document.getElementById('roomInput').value = '';
+            document.getElementById('winnerMessage').style.display = 'none';
+            document.getElementById('winnerBackdrop').style.display = 'none';
+            updateStatus('Create or join a game', 'waiting');
+        }
+
+        function updateStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            updateTurnIndicators();
+        }
+
+        function updateTurnIndicators() {
+            const yourTurn = document.getElementById('yourTurnIndicator');
+            const opponentTurn = document.getElementById('opponentTurnIndicator');
+            
+            if (!yourTurn || !opponentTurn || !mySymbol) return;
+            
+            const opponentSymbol = mySymbol === 'X' ? 'O' : 'X';
+            yourTurn.textContent = `Your Turn (${mySymbol})`;
+            opponentTurn.textContent = `Opponent Turn (${opponentSymbol})`;
+            
+            if (isMyTurn) {
+                yourTurn.classList.add('active');
+                opponentTurn.classList.remove('active');
+            } else {
+                yourTurn.classList.remove('active');
+                opponentTurn.classList.add('active');
+            }
+        }
+
+        function generateQRCode(roomId) {
+            const qrCodeDiv = document.getElementById('qrCode');
+            qrCodeDiv.innerHTML = '<p style="color: #666; font-size: 0.85em;">Generating QR code...</p>';
+            
+            const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
+            
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+            script.onload = () => {
+                qrCodeDiv.innerHTML = '';
+                new QRCode(qrCodeDiv, {
+                    text: joinUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#ffcc00',
+                    colorLight: '#000000'
+                });
+            };
+            document.head.appendChild(script);
+        }
+
+        function updateBoard() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach((cell, index) => {
+                cell.textContent = gameBoard[index] || '';
+                cell.className = 'cell';
+                if (gameBoard[index]) {
+                    cell.classList.add(gameBoard[index].toLowerCase());
+                }
+                cell.disabled = gameBoard[index] !== null || !isMyTurn;
+            });
+        }
+
+        function disableBoard() {
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.disabled = true;
+            });
+        }
+
+        function enableBoard() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach(cell => {
+                const index = parseInt(cell.getAttribute('data-index'));
+                if (!gameBoard[index]) {
+                    cell.disabled = !isMyTurn;
+                }
+            });
+        }
+
+        function showWinnerMessage(winner) {
+            const backdrop = document.getElementById('winnerBackdrop');
+            const winnerDiv = document.getElementById('winnerMessage');
+            
+            let message = '';
+            let className = '';
+            
+            if (winner === 'draw') {
+                message = 'It\'s a Draw!';
+                className = 'draw';
+            } else if (winner === mySymbol) {
+                message = `You Won! (${winner})`;
+                className = 'winner';
+            } else {
+                message = `Opponent Won! (${winner})`;
+                className = 'winner-lose';
+            }
+            
+            winnerDiv.innerHTML = `<div class="${className}">${message}</div>`;
+            winnerDiv.style.display = 'block';
+            backdrop.style.display = 'block';
+            
+            backdrop.onclick = function() {
+                backdrop.style.display = 'none';
+                winnerDiv.style.display = 'none';
+            };
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomFromUrl = urlParams.get('room');
+        if (roomFromUrl) {
+            setTimeout(() => {
+                document.getElementById('roomInput').value = roomFromUrl;
+                joinExistingGame();
+            }, 500);
+        }
+    </script>
+</body>
+</html>
