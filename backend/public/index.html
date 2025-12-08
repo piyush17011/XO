@@ -735,8 +735,8 @@
 
         <div id="gameSection" style="display: none;">
             <div class="turn-indicators">
-                <div class="turn-indicator" id="yourTurnIndicator">Your Turn (X)</div>
-                <div class="turn-indicator" id="opponentTurnIndicator">Opponent Turn (O)</div>
+                <div class="turn-indicator" id="yourTurnIndicator">Your Turn</div>
+                <div class="turn-indicator" id="opponentTurnIndicator">Opponent Turn</div>
             </div>
             <div class="board" id="board">
                 <button class="cell" data-index="0" onclick="makeMove(0)"></button>
@@ -945,7 +945,11 @@
             const yourTurn = document.getElementById('yourTurnIndicator');
             const opponentTurn = document.getElementById('opponentTurnIndicator');
             
-            if (!yourTurn || !opponentTurn) return;
+            if (!yourTurn || !opponentTurn || !mySymbol) return;
+            
+            const opponentSymbol = mySymbol === 'X' ? 'O' : 'X';
+            yourTurn.textContent = `Your Turn (${mySymbol})`;
+            opponentTurn.textContent = `Opponent Turn (${opponentSymbol})`;
             
             if (isMyTurn) {
                 yourTurn.classList.add('active');
