@@ -212,7 +212,6 @@
             font-size: 2.8em;
             font-weight: 800;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -226,7 +225,6 @@
         .cell:hover:not(:disabled) {
             background: #1a1a1a;
             border-color: #ffcc00;
-            transform: scale(1.08);
             box-shadow: 0 0 12px rgba(255, 204, 0, 0.3);
         }
 
@@ -750,7 +748,7 @@
                 <button class="cell" data-index="8" onclick="makeMove(8)"></button>
             </div>
             <div class="controls">
-                <button onclick="resetGame()">Reset Game</button>
+                <button onclick="playAgain()">Play Again</button>
                 <button onclick="newGame()">New Game</button>
             </div>
         </div>
@@ -886,6 +884,12 @@
         }
 
         function resetGame() {
+            if (currentRoomId) {
+                socket.emit('reset-game', currentRoomId);
+            }
+        }
+
+        function playAgain() {
             if (currentRoomId) {
                 socket.emit('reset-game', currentRoomId);
             }
