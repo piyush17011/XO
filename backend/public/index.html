@@ -947,22 +947,12 @@
             
             if (!yourTurn || !opponentTurn) return;
             
-            if (mySymbol === 'X') {
-                if (isMyTurn) {
-                    yourTurn.classList.add('active');
-                    opponentTurn.classList.remove('active');
-                } else {
-                    yourTurn.classList.remove('active');
-                    opponentTurn.classList.add('active');
-                }
+            if (isMyTurn) {
+                yourTurn.classList.add('active');
+                opponentTurn.classList.remove('active');
             } else {
-                if (isMyTurn) {
-                    opponentTurn.classList.add('active');
-                    yourTurn.classList.remove('active');
-                } else {
-                    opponentTurn.classList.remove('active');
-                    yourTurn.classList.add('active');
-                }
+                yourTurn.classList.remove('active');
+                opponentTurn.classList.add('active');
             }
         }
 
