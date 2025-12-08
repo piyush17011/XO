@@ -161,22 +161,30 @@ io.on('connection', (socket) => {
       game.status = 'playing';
       game.winner = null;
       
-      // Update player symbols and turns
-      const player1 = players.get(game.players[0]);
-      const player2 = players.get(game.players[1]);
+      // Assign symbols based on player order
+      const player1SocketId = game.players[0];
+      const player2SocketId = game.players[1];
       
-      if (player1) {
-        player1.symbol = game.firstPlayerIsX ? 'X' : 'O';
+      if (player1SocketId) {
+        players.get(player1SocketId).symbol = game.firstPlayerIsX ? 'X' : 'O';
       }
-      if (player2) {
-        player2.symbol = game.firstPlayerIsX ? 'O' : 'X';
+      if (player2SocketId) {
+        players.get(player2SocketId).symbol = game.firstPlayerIsX ? 'O' : 'X';
       }
       
-      io.to(roomId).emit('game-reset', { 
-        currentPlayer: game.currentPlayer,
-        player1Symbol: game.firstPlayerIsX ? 'X' : 'O',
-        player2Symbol: game.firstPlayerIsX ? 'O' : 'X'
-      });
+      // Send personalized reset info to each player
+      if (player1SocketId) {
+        io.to(player1SocketId).emit('game-reset', { 
+          currentPlayer: game.currentPlayer,
+          mySymbol: game.firstPlayerIsX ? 'X' : 'O'
+        });
+      }
+      if (player2SocketId) {
+        io.to(player2SocketId).emit('game-reset', { 
+          currentPlayer: game.currentPlayer,
+          mySymbol: game.firstPlayerIsX ? 'O' : 'X'
+        });
+      }
     }
   });
 

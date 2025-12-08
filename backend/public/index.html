@@ -840,11 +840,9 @@
 
         socket.on('game-reset', (data) => {
             gameBoard = Array(9).fill(null);
-            // Update symbol if it changed
-            if (data.player1Symbol && data.player2Symbol) {
-                // Determine which symbol we are based on player order
-                const player1Socket = socket.id; // This might need adjustment
-                // For now, keep current symbol logic but update turn
+            // Update symbol if provided
+            if (data.mySymbol) {
+                mySymbol = data.mySymbol;
             }
             isMyTurn = data.currentPlayer === mySymbol;
             updateBoard();
