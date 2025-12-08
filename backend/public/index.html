@@ -158,6 +158,36 @@
             text-align: center;
         }
 
+        .turn-indicators {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+            gap: 15px;
+            max-width: 280px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+        }
+
+        .turn-indicator {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            border: 2px solid #666;
+            color: #666;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+
+        .turn-indicator.active {
+            border-color: #ffcc00;
+            color: #ffcc00;
+            box-shadow: 0 0 8px rgba(255, 204, 0, 0.3);
+            background: rgba(255, 204, 0, 0.05);
+        }
+
         .board {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -704,6 +734,10 @@
         </div>
 
         <div id="gameSection" style="display: none;">
+            <div class="turn-indicators">
+                <div class="turn-indicator" id="yourTurnIndicator">Your Turn (X)</div>
+                <div class="turn-indicator" id="opponentTurnIndicator">Opponent Turn (O)</div>
+            </div>
             <div class="board" id="board">
                 <button class="cell" data-index="0" onclick="makeMove(0)"></button>
                 <button class="cell" data-index="1" onclick="makeMove(1)"></button>
@@ -904,6 +938,32 @@
             const statusDiv = document.getElementById('status');
             statusDiv.textContent = message;
             statusDiv.className = `status ${type}`;
+            updateTurnIndicators();
+        }
+
+        function updateTurnIndicators() {
+            const yourTurn = document.getElementById('yourTurnIndicator');
+            const opponentTurn = document.getElementById('opponentTurnIndicator');
+            
+            if (!yourTurn || !opponentTurn) return;
+            
+            if (mySymbol === 'X') {
+                if (isMyTurn) {
+                    yourTurn.classList.add('active');
+                    opponentTurn.classList.remove('active');
+                } else {
+                    yourTurn.classList.remove('active');
+                    opponentTurn.classList.add('active');
+                }
+            } else {
+                if (isMyTurn) {
+                    opponentTurn.classList.add('active');
+                    yourTurn.classList.remove('active');
+                } else {
+                    opponentTurn.classList.remove('active');
+                    yourTurn.classList.add('active');
+                }
+            }
         }
 
         function generateQRCode(roomId) {
