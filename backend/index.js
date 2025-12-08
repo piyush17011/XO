@@ -36,6 +36,7 @@ app.get('/', (req, res) => {
 // Game state
 const games = new Map(); // Store game rooms
 const players = new Map(); // Store player socket IDs
+let gameCounter = 0; // Track game number for alternating first turn
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
@@ -154,10 +155,28 @@ io.on('connection', (socket) => {
     const game = games.get(roomId);
     if (game) {
       game.board = Array(9).fill(null);
-      game.currentPlayer = 'X';
+      // Alternate first turn on reset
+      game.firstPlayerIsX = !game.firstPlayerIsX;
+      game.currentPlayer = game.firstPlayerIsX ? 'X' : 'O';
       game.status = 'playing';
       game.winner = null;
-      io.to(roomId).emit('game-reset', { currentPlayer: 'X' });
+      
+      // Update player symbols and turns
+      const player1 = players.get(game.players[0]);
+      const player2 = players.get(game.players[1]);
+      
+      if (player1) {
+        player1.symbol = game.firstPlayerIsX ? 'X' : 'O';
+      }
+      if (player2) {
+        player2.symbol = game.firstPlayerIsX ? 'O' : 'X';
+      }
+      
+      io.to(roomId).emit('game-reset', { 
+        currentPlayer: game.currentPlayer,
+        player1Symbol: game.firstPlayerIsX ? 'X' : 'O',
+        player2Symbol: game.firstPlayerIsX ? 'O' : 'X'
+      });
     }
   });
 
