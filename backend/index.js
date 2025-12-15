@@ -7,7 +7,7 @@ const path = require('path');
 const app = express();
 const server = http.createServer(app);
 
-// Configure Socket.io for production
+// Configure Socket.io 
 const io = socketIo(server, {
   cors: {
     origin: process.env.CORS_ORIGIN || "*",
@@ -17,7 +17,7 @@ const io = socketIo(server, {
   transports: ['websocket', 'polling']
 });
 
-// Trust proxy (important for hosting platforms like Heroku, Railway, etc.)
+// Trust proxy for some hosting platforms
 app.set('trust proxy', 1);
 
 // Serve static files from public directory
@@ -35,9 +35,7 @@ app.get('/', (req, res) => {
 
 // Game state
 const games = new Map(); // Store game rooms
-const players = new Map(); // Store player socket IDs
-let gameCounter = 0; // Track game number for alternating first turn
-
+const players = new Map(); // Store player socket ID
 // Socket.io connection handling
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
