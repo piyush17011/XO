@@ -173,15 +173,19 @@ io.on('connection', (socket) => {
       
       // Send personalized reset info to each player
       if (player1SocketId) {
+        const mySymbol1 = game.firstPlayerIsX ? 'X' : 'O';
         io.to(player1SocketId).emit('game-reset', { 
           currentPlayer: game.currentPlayer,
-          mySymbol: game.firstPlayerIsX ? 'X' : 'O'
+          mySymbol: mySymbol1,
+          isYourTurn: game.currentPlayer === mySymbol1
         });
       }
       if (player2SocketId) {
+        const mySymbol2 = game.firstPlayerIsX ? 'O' : 'X';
         io.to(player2SocketId).emit('game-reset', { 
           currentPlayer: game.currentPlayer,
-          mySymbol: game.firstPlayerIsX ? 'O' : 'X'
+          mySymbol: mySymbol2,
+          isYourTurn: game.currentPlayer === mySymbol2
         });
       }
     }
