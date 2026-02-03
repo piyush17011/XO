@@ -73,7 +73,8 @@ io.on('connection', (socket) => {
         board: Array(9).fill(null),
         currentPlayer: 'X',
         players: [socket.id],
-        status: 'waiting'
+        status: 'waiting',
+        firstPlayerIsX: true
       });
       players.set(socket.id, { roomId: newRoomId, symbol: 'X' });
       socket.emit('game-joined', { roomId: newRoomId, symbol: 'X', isYourTurn: true });
