@@ -93,6 +93,12 @@ io.on('connection', (socket) => {
           const player2Symbol = game.firstPlayerIsX ? 'O' : 'X';
           players.set(game.players[0], { roomId: trimmedRoomId, symbol: player1Symbol });
           players.set(socket.id, { roomId: trimmedRoomId, symbol: player2Symbol });
+          
+          // Track who goes first initially
+          game.lastFirstPlayer = game.currentPlayer === 'X' ? 
+            (player1Symbol === 'X' ? game.players[0] : socket.id) :
+            (player1Symbol === 'O' ? game.players[0] : socket.id);
+          
           socket.emit('game-joined', { roomId: trimmedRoomId, symbol: player2Symbol, isYourTurn: game.currentPlayer === player2Symbol });
           socket.to(trimmedRoomId).emit('opponent-joined', { symbol: player1Symbol, isYourTurn: game.currentPlayer === player1Symbol });
           io.to(trimmedRoomId).emit('game-start', { currentPlayer: game.currentPlayer });
@@ -160,38 +166,37 @@ io.on('connection', (socket) => {
     const game = games.get(roomId);
     if (game) {
       game.board = Array(9).fill(null);
-      // Alternate first turn on reset
-      game.firstPlayerIsX = !game.firstPlayerIsX;
-      game.currentPlayer = game.firstPlayerIsX ? 'X' : 'O';
       game.status = 'playing';
       game.winner = null;
       
-      // Assign symbols based on player order
       const player1SocketId = game.players[0];
       const player2SocketId = game.players[1];
       
-      if (player1SocketId) {
-        players.get(player1SocketId).symbol = game.firstPlayerIsX ? 'X' : 'O';
-      }
-      if (player2SocketId) {
-        players.get(player2SocketId).symbol = game.firstPlayerIsX ? 'O' : 'X';
-      }
+      // Get current symbols for each player (these stay the same)
+      const player1Symbol = players.get(player1SocketId)?.symbol;
+      const player2Symbol = players.get(player2SocketId)?.symbol;
+      
+      // Alternate: if player1 went first last time, player2 goes first this time
+      const nextFirstPlayer = (game.lastFirstPlayer === player1SocketId) ? player2SocketId : player1SocketId;
+      game.lastFirstPlayer = nextFirstPlayer; // Update for next reset
+      
+      // Set currentPlayer to the symbol of whoever goes first
+      const nextFirstPlayerSymbol = players.get(nextFirstPlayer)?.symbol;
+      game.currentPlayer = nextFirstPlayerSymbol;
       
       // Send personalized reset info to each player
       if (player1SocketId) {
-        const mySymbol1 = game.firstPlayerIsX ? 'X' : 'O';
         io.to(player1SocketId).emit('game-reset', { 
           currentPlayer: game.currentPlayer,
-          mySymbol: mySymbol1,
-          isYourTurn: game.currentPlayer === mySymbol1
+          mySymbol: player1Symbol,
+          isYourTurn: game.currentPlayer === player1Symbol
         });
       }
       if (player2SocketId) {
-        const mySymbol2 = game.firstPlayerIsX ? 'O' : 'X';
         io.to(player2SocketId).emit('game-reset', { 
           currentPlayer: game.currentPlayer,
-          mySymbol: mySymbol2,
-          isYourTurn: game.currentPlayer === mySymbol2
+          mySymbol: player2Symbol,
+          isYourTurn: game.currentPlayer === player2Symbol
         });
       }
     }
