@@ -66,6 +66,8 @@ io.on('connection', (socket) => {
     }
 
     if (!trimmedRoomId || trimmedRoomId === '') {
+      // Generate a unique room ID
+      const newRoomId = Math.random().toString(36).substring(2, 8).toUpperCase();
       socket.join(newRoomId);
       games.set(newRoomId, {
         board: Array(9).fill(null),
