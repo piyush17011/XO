@@ -36,6 +36,7 @@ app.get('/', (req, res) => {
 // Game state
 const games = new Map(); // Store game rooms
 const players = new Map(); // Store player socket ID
+let globalFirstIsX = true; // Global toggle for first move in new rooms
 // Socket.io connection handling
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
@@ -65,38 +66,41 @@ io.on('connection', (socket) => {
     }
 
     if (!trimmedRoomId || trimmedRoomId === '') {
-      // Create new game - shorter room ID
-      const randomPart = Math.random().toString(36).substr(2, 6).toUpperCase();
-      const newRoomId = randomPart;
       socket.join(newRoomId);
       games.set(newRoomId, {
         board: Array(9).fill(null),
         currentPlayer: 'X',
         players: [socket.id],
         status: 'waiting',
-        firstPlayerIsX: true
+        firstPlayerIsX: globalFirstIsX
       });
-      players.set(socket.id, { roomId: newRoomId, symbol: 'X' });
-      socket.emit('game-joined', { roomId: newRoomId, symbol: 'X', isYourTurn: true });
+      globalFirstIsX = !globalFirstIsX;
+      const game = games.get(newRoomId);
+      const symbol = game.firstPlayerIsX ? 'X' : 'O';
+      players.set(socket.id, { roomId: newRoomId, symbol });
+      socket.emit('game-joined', { roomId: newRoomId, symbol, isYourTurn: game.currentPlayer === symbol });
       console.log(`Player ${socket.id} created room ${newRoomId}`);
-    } else {
-      // Join existing game
-      const game = games.get(trimmedRoomId);
-      if (game && game.players.length === 1 && game.status === 'waiting') {
-        socket.join(trimmedRoomId);
-        game.players.push(socket.id);
-        game.status = 'playing';
-        players.set(socket.id, { roomId: trimmedRoomId, symbol: 'O' });
-        socket.emit('game-joined', { roomId: trimmedRoomId, symbol: 'O', isYourTurn: false });
-        socket.to(trimmedRoomId).emit('opponent-joined', { symbol: 'X', isYourTurn: true });
-        io.to(trimmedRoomId).emit('game-start', { currentPlayer: 'X' });
-        console.log(`Player ${socket.id} joined room ${trimmedRoomId}`);
-      } else if (game && game.players.length >= 2) {
-        socket.emit('join-error', { message: 'Room is full. Please create a new game or join a different room.' });
       } else {
-        socket.emit('join-error', { message: 'Room does not exist. Please check the Room ID or create a new game.' });
+        // Join existing game
+        const game = games.get(trimmedRoomId);
+        if (game && game.players.length === 1 && game.status === 'waiting') {
+          socket.join(trimmedRoomId);
+          game.players.push(socket.id);
+          game.status = 'playing';
+          const player1Symbol = game.firstPlayerIsX ? 'X' : 'O';
+          const player2Symbol = game.firstPlayerIsX ? 'O' : 'X';
+          players.set(game.players[0], { roomId: trimmedRoomId, symbol: player1Symbol });
+          players.set(socket.id, { roomId: trimmedRoomId, symbol: player2Symbol });
+          socket.emit('game-joined', { roomId: trimmedRoomId, symbol: player2Symbol, isYourTurn: game.currentPlayer === player2Symbol });
+          socket.to(trimmedRoomId).emit('opponent-joined', { symbol: player1Symbol, isYourTurn: game.currentPlayer === player1Symbol });
+          io.to(trimmedRoomId).emit('game-start', { currentPlayer: game.currentPlayer });
+          console.log(`Player ${socket.id} joined room ${trimmedRoomId}`);
+        } else if (game && game.players.length >= 2) {
+          socket.emit('join-error', { message: 'Room is full. Please create a new game or join a different room.' });
+        } else {
+          socket.emit('join-error', { message: 'Room does not exist. Please check the Room ID or create a new game.' });
+        }
       }
-    }
   });
 
   socket.on('make-move', (data) => {
