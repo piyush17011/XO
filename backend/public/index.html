@@ -7,11 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --bg: #0e0e0e;
@@ -22,10 +18,9 @@
       --strong: #e2e2e2;
       --copy-hint: #3a3a3a;
       --turn-inactive: #2a2a2a;
-      --cell-bg: #0e0e0e;
       --font-mono: 'Roboto Mono', monospace;
       --font-display: 'Space Mono', monospace;
-      --transition-theme: background 0.25s, color 0.25s, border-color 0.25s;
+      --t: background 0.25s, color 0.25s, border-color 0.25s;
     }
 
     :root.light {
@@ -37,13 +32,9 @@
       --strong: #1a1a18;
       --copy-hint: #b0afaa;
       --turn-inactive: #c9c8c3;
-      --cell-bg: #f0efeb;
     }
 
-    html, body {
-      height: 100%;
-      transition: var(--transition-theme);
-    }
+    html, body { height: 100%; transition: var(--t); }
 
     body {
       font-family: var(--font-mono);
@@ -53,13 +44,11 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
       min-height: 100dvh;
       padding: 1rem;
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* ── Layout ── */
     .app {
       width: 100%;
       max-width: 420px;
@@ -68,12 +57,8 @@
       gap: 1.5rem;
     }
 
-    /* ── Header ── */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    /* header */
+    .header { display: flex; justify-content: space-between; align-items: center; }
 
     .logo {
       font-family: var(--font-display);
@@ -82,16 +67,14 @@
       color: var(--strong);
       letter-spacing: -0.5px;
     }
-
     .logo span { color: var(--muted); }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .header-right { display: flex; align-items: center; gap: 14px; }
 
     .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
       background: none;
       border: 1px solid var(--border);
       border-radius: 20px;
@@ -102,45 +85,21 @@
       color: var(--muted);
       letter-spacing: 0.05em;
       min-height: auto;
-      transition: border-color 0.15s, color 0.15s, background 0.25s;
-      display: flex;
-      align-items: center;
-      gap: 5px;
       white-space: nowrap;
+      transition: border-color 0.15s, color 0.15s;
     }
+    .theme-toggle:hover { border-color: var(--muted); color: var(--text); }
 
-    .theme-toggle:hover {
-      border-color: var(--muted);
-      color: var(--text);
-    }
-
-    .theme-toggle .icon {
-      font-size: 12px;
-      line-height: 1;
-    }
-
-    .status-pill {
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      transition: color 0.2s;
-    }
-
+    .status-pill { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
     .status-pill.online { color: var(--text); }
 
-    /* ── Screens ── */
+    /* screens */
     .screen { display: none; flex-direction: column; align-items: center; gap: 1.25rem; width: 100%; }
     .screen.active { display: flex; }
 
-    /* ── Labels ── */
-    .label {
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      text-align: center;
-    }
+    .label { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-align: center; }
 
-    /* ── Buttons ── */
+    /* buttons */
     button {
       font-family: var(--font-mono);
       font-size: 13px;
@@ -158,27 +117,13 @@
       padding: 10px 18px;
       min-height: 40px;
     }
-
     .btn:hover { border-color: var(--muted); color: var(--text); }
-
-    .btn.primary {
-      border-color: var(--text);
-      color: var(--text);
-    }
-
-    .btn.primary:hover {
-      background: var(--text);
-      color: var(--bg);
-    }
-
+    .btn.primary { border-color: var(--text); color: var(--text); }
+    .btn.primary:hover { background: var(--text); color: var(--bg); }
     .btn.full { width: 100%; }
 
-    /* ── Input ── */
-    .input-row {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-    }
+    /* input */
+    .input-row { display: flex; gap: 8px; width: 100%; }
 
     input[type="text"] {
       flex: 1;
@@ -195,16 +140,10 @@
       min-height: 40px;
       -webkit-appearance: none;
     }
-
-    input[type="text"]::placeholder {
-      color: var(--muted);
-      letter-spacing: 0;
-      text-transform: none;
-    }
-
+    input[type="text"]::placeholder { color: var(--muted); letter-spacing: 0; text-transform: none; }
     input[type="text"]:focus { border-color: var(--text); }
 
-    /* ── Divider ── */
+    /* divider */
     .divider {
       display: flex;
       align-items: center;
@@ -214,20 +153,14 @@
       font-size: 11px;
       letter-spacing: 0.05em;
     }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    /* ── Wait screen ── */
+    /* wait screen */
     .room-big {
       font-family: var(--font-display);
       font-size: 32px;
       font-weight: 700;
-      color: var(--white);
+      color: var(--strong);
       letter-spacing: 8px;
       text-align: center;
     }
@@ -243,43 +176,27 @@
       padding: 0;
       min-height: auto;
     }
-
     .copy-link:hover { color: var(--muted); }
 
-    .dots-loader {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
+    .dots-loader { display: flex; gap: 6px; align-items: center; }
     .dots-loader span {
-      width: 5px;
-      height: 5px;
+      width: 5px; height: 5px;
       background: var(--muted);
       border-radius: 50%;
       animation: pulse-dot 1.2s ease-in-out infinite;
-      display: inline-block;
     }
-
     .dots-loader span:nth-child(2) { animation-delay: 0.2s; }
     .dots-loader span:nth-child(3) { animation-delay: 0.4s; }
-
     @keyframes pulse-dot {
       0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
       40% { opacity: 1; transform: scale(1); }
     }
 
-    /* ── QR (only shown while waiting) ── */
-    .qr-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-    }
+    /* QR */
+    .qr-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 
     .qr-box {
-      background: #fff;
+      background: #ffffff;
       border-radius: 8px;
       padding: 10px;
       display: flex;
@@ -287,21 +204,12 @@
       justify-content: center;
       width: 140px;
       height: 140px;
+      flex-shrink: 0;
     }
+    .qr-box img { width: 120px; height: 120px; display: block; }
 
-    .qr-box img {
-      width: 120px;
-      height: 120px;
-      display: block;
-    }
-
-    /* ── Game screen ── */
-    .turn-row {
-      display: flex;
-      gap: 28px;
-      font-size: 11px;
-      letter-spacing: 0.06em;
-    }
+    /* game */
+    .turn-row { display: flex; gap: 28px; }
 
     .turn-player {
       color: var(--turn-inactive);
@@ -315,11 +223,7 @@
       font-size: 11px;
       letter-spacing: 0.06em;
     }
-
-    .turn-player.active {
-      color: var(--text);
-      border-bottom: 1px solid var(--text);
-    }
+    .turn-player.active { color: var(--text); border-bottom: 1px solid var(--text); }
 
     .board {
       display: grid;
@@ -351,30 +255,17 @@
       padding: 0;
       min-height: unset;
     }
-
     .cell:hover:not(:disabled):not(.filled) { background: var(--surface); }
     .cell:disabled { cursor: default; }
     .cell.x-sym { color: var(--strong); }
     .cell.o-sym { color: var(--muted); }
 
-    .game-msg {
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.06em;
-      min-height: 16px;
-      text-align: center;
-    }
-
+    .game-msg { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; min-height: 16px; text-align: center; }
     .game-msg.active { color: var(--text); }
 
-    .action-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+    .action-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 
-    /* ── Result screen ── */
+    /* result */
     .result-word {
       font-family: var(--font-display);
       font-size: clamp(36px, 12vw, 56px);
@@ -383,43 +274,17 @@
       line-height: 1;
       text-align: center;
     }
-
-    .result-word.win { color: var(--strong); }
+    .result-word.win  { color: var(--strong); }
     .result-word.lose { color: var(--border); }
     .result-word.draw { color: var(--muted); }
+    .result-sub { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; }
 
-    .result-sub {
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-    }
+    /* room badge */
+    .room-badge { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+    .room-badge strong { font-family: var(--font-display); font-size: 13px; color: var(--text); letter-spacing: 3px; }
 
-    /* ── Room info badge (in game) ── */
-    .room-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-
-    .room-badge strong {
-      font-family: var(--font-display);
-      font-size: 13px;
-      color: var(--text);
-      letter-spacing: 3px;
-    }
-
-    /* ── Mobile safe area ── */
-    @media (max-width: 400px) {
-      body { padding: 0.75rem; }
-      .board { max-width: 260px; }
-    }
-
-    @media (max-height: 640px) {
-      .app { gap: 1rem; }
-    }
+    @media (max-width: 400px) { body { padding: 0.75rem; } .board { max-width: 260px; } }
+    @media (max-height: 640px) { .app { gap: 1rem; } }
   </style>
 </head>
 <body>
@@ -428,15 +293,15 @@
   <div class="header">
     <div class="logo">XO<span>.</span>io</div>
     <div class="header-right">
-      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
-        <span class="icon" id="themeIcon">○</span>
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="themeIcon">○</span>
         <span id="themeLabel">light</span>
       </button>
       <div class="status-pill" id="statusPill">connecting</div>
     </div>
   </div>
 
-  <!-- ── Join screen ── -->
+  <!-- Join -->
   <div class="screen active" id="joinScreen">
     <div class="label">create a new game</div>
     <button class="btn primary full" onclick="createNewGame()">new game</button>
@@ -447,55 +312,47 @@
     </div>
   </div>
 
-  <!-- ── Waiting screen (shown to creator before opponent joins) ── -->
+  <!-- Wait (creator only) -->
   <div class="screen" id="waitScreen">
     <div class="label">share this room id</div>
     <div class="room-big" id="waitRoomCode">——</div>
     <button class="copy-link" id="copyBtn" onclick="copyRoomLink()">[ click to copy invite link ]</button>
-
     <div class="qr-wrap">
       <div class="label">or scan to join</div>
       <div class="qr-box" id="qrBox">
-        <span style="font-size:11px;color:#999">loading…</span>
+        <span style="font-size:11px;color:#aaa">loading…</span>
       </div>
     </div>
-
     <div class="dots-loader"><span></span><span></span><span></span></div>
     <div class="label">waiting for opponent</div>
     <button class="btn" onclick="cancelWait()">cancel</button>
   </div>
 
-  <!-- ── Game screen ── -->
+  <!-- Game -->
   <div class="screen" id="gameScreen">
-    <div class="room-badge">
-      room <strong id="gameRoomCode">——</strong>
-    </div>
-
+    <div class="room-badge">room <strong id="gameRoomCode">——</strong></div>
     <div class="turn-row">
       <button class="turn-player" id="yourTurnEl">you (X)</button>
       <button class="turn-player" id="oppTurnEl">opponent (O)</button>
     </div>
-
-    <div class="board" id="board">
-      <button class="cell" data-index="0" onclick="makeMove(0)"></button>
-      <button class="cell" data-index="1" onclick="makeMove(1)"></button>
-      <button class="cell" data-index="2" onclick="makeMove(2)"></button>
-      <button class="cell" data-index="3" onclick="makeMove(3)"></button>
-      <button class="cell" data-index="4" onclick="makeMove(4)"></button>
-      <button class="cell" data-index="5" onclick="makeMove(5)"></button>
-      <button class="cell" data-index="6" onclick="makeMove(6)"></button>
-      <button class="cell" data-index="7" onclick="makeMove(7)"></button>
-      <button class="cell" data-index="8" onclick="makeMove(8)"></button>
+    <div class="board">
+      <button class="cell" onclick="makeMove(0)"></button>
+      <button class="cell" onclick="makeMove(1)"></button>
+      <button class="cell" onclick="makeMove(2)"></button>
+      <button class="cell" onclick="makeMove(3)"></button>
+      <button class="cell" onclick="makeMove(4)"></button>
+      <button class="cell" onclick="makeMove(5)"></button>
+      <button class="cell" onclick="makeMove(6)"></button>
+      <button class="cell" onclick="makeMove(7)"></button>
+      <button class="cell" onclick="makeMove(8)"></button>
     </div>
-
     <div class="game-msg" id="gameMsg">—</div>
-
     <div class="action-row">
       <button class="btn" onclick="newGame()">home</button>
     </div>
   </div>
 
-  <!-- ── Result screen ── -->
+  <!-- Result -->
   <div class="screen" id="resultScreen">
     <div class="result-word" id="resultWord">draw</div>
     <div class="result-sub" id="resultSub">game over</div>
@@ -507,20 +364,17 @@
 
 </div>
 
-<!-- winner overlay (kept for compatibility, but hidden via new result screen) -->
-<div id="winnerBackdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:998;"></div>
-<div id="winnerMessage" style="display:none;"></div>
-
 <script src="/socket.io/socket.io.js"></script>
 <script>
   const socket = io();
 
   let currentRoomId = null;
-  let mySymbol     = null;
-  let isMyTurn     = false;
-  let gameBoard    = Array(9).fill(null);
+  let mySymbol      = null;
+  let isMyTurn      = false;
+  let gameBoard     = Array(9).fill(null);
+  let isCreator     = false;
 
-  // ── Screen navigation ──────────────────────────────────────────
+  // screens
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -532,124 +386,123 @@
     el.className = 'status-pill' + (online ? ' online' : '');
   }
 
-  // ── QR code ───────────────────────────────────────────────────
+  // QR
   function generateQRCode(roomId) {
-    const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
-    const size = 120;
-    const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(joinUrl)}&color=000000&bgcolor=ffffff&margin=1`;
-    const qrBox = document.getElementById('qrBox');
-    const img = document.createElement('img');
-    img.src = apiUrl;
-    img.width = size;
-    img.height = size;
+    const url = `${location.origin}${location.pathname}?room=${roomId}`;
+    const api = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(url)}&color=000000&bgcolor=ffffff&margin=1`;
+    const box = document.getElementById('qrBox');
+    box.innerHTML = '<span style="font-size:11px;color:#aaa">loading…</span>';
+    const img = new Image(120, 120);
     img.alt = 'QR code';
-    img.onerror = () => { qrBox.innerHTML = `<span style="font-size:11px;color:#999">QR unavailable<br>${roomId}</span>`; };
-    qrBox.innerHTML = '';
-    qrBox.appendChild(img);
+    img.onload  = () => { box.innerHTML = ''; box.appendChild(img); };
+    img.onerror = () => { box.innerHTML = `<span style="font-size:11px;color:#aaa">unavailable<br><b>${roomId}</b></span>`; };
+    img.src = api;
   }
 
   function copyRoomLink() {
-    const joinUrl = `${window.location.origin}${window.location.pathname}?room=${currentRoomId}`;
-    navigator.clipboard?.writeText(joinUrl).then(() => {
+    const url = `${location.origin}${location.pathname}?room=${currentRoomId}`;
+    navigator.clipboard?.writeText(url).then(() => {
       const btn = document.getElementById('copyBtn');
+      const orig = btn.textContent;
       btn.textContent = '[ copied! ]';
-      setTimeout(() => btn.textContent = '[ click to copy invite link ]', 1800);
+      setTimeout(() => btn.textContent = orig, 1800);
     });
   }
 
-  // ── Board rendering ────────────────────────────────────────────
+  // board
+  function cells() { return document.querySelectorAll('.cell'); }
+
   function updateBoard() {
-    document.querySelectorAll('.cell').forEach((cell, i) => {
+    cells().forEach((cell, i) => {
       const v = gameBoard[i];
       cell.textContent = v || '';
-      cell.className = 'cell' + (v ? ' filled' : '') + (v === 'X' ? ' x-sym' : v === 'O' ? ' o-sym' : '');
-      cell.disabled = !!v || !isMyTurn;
+      cell.className   = 'cell' + (v ? ' filled' : '') + (v === 'X' ? ' x-sym' : v === 'O' ? ' o-sym' : '');
+      cell.disabled    = !!v || !isMyTurn;
     });
   }
 
-  function enableBoard()  { document.querySelectorAll('.cell').forEach((c, i) => { if (!gameBoard[i]) c.disabled = !isMyTurn; }); }
-  function disableBoard() { document.querySelectorAll('.cell').forEach(c => c.disabled = true); }
+  function enableBoard()  { cells().forEach((c, i) => { if (!gameBoard[i]) c.disabled = !isMyTurn; }); }
+  function disableBoard() { cells().forEach(c => c.disabled = true); }
 
-  // ── Turn UI ────────────────────────────────────────────────────
+  // turn UI
   function updateTurnIndicators() {
-    const oppSym = mySymbol === 'X' ? 'O' : 'X';
-    const yourEl = document.getElementById('yourTurnEl');
-    const oppEl  = document.getElementById('oppTurnEl');
-    yourEl.textContent = `you (${mySymbol})`;
-    oppEl.textContent  = `opponent (${oppSym})`;
-    yourEl.classList.toggle('active', isMyTurn);
-    oppEl.classList.toggle('active', !isMyTurn);
+    const opp = mySymbol === 'X' ? 'O' : 'X';
+    const you = document.getElementById('yourTurnEl');
+    const op  = document.getElementById('oppTurnEl');
+    you.textContent = `you (${mySymbol})`;
+    op.textContent  = `opponent (${opp})`;
+    you.classList.toggle('active',  isMyTurn);
+    op.classList.toggle('active',  !isMyTurn);
   }
 
-  function setGameMsg(txt, highlight) {
+  function setGameMsg(txt, hi) {
     const el = document.getElementById('gameMsg');
     el.textContent = txt;
-    el.className = 'game-msg' + (highlight ? ' active' : '');
+    el.className   = 'game-msg' + (hi ? ' active' : '');
   }
 
-  // ── Show result screen (replaces old backdrop) ─────────────────
+  // result
   function showResult(winner) {
-    const words = { [mySymbol]: 'gg', draw: 'draw' };
-    const subs  = { [mySymbol]: 'you won!', draw: "it's a draw" };
-    const oppSym = mySymbol === 'X' ? 'O' : 'X';
-
-    let type, wordTxt, subTxt;
-    if (winner === 'draw') {
-      type = 'draw'; wordTxt = 'draw'; subTxt = "it's a draw";
-    } else if (winner === mySymbol) {
-      type = 'win'; wordTxt = 'gg ez'; subTxt = 'you won!';
-    } else {
-      type = 'lose'; wordTxt = 'rekt'; subTxt = 'you lost';
-    }
-
-    document.getElementById('resultWord').textContent = wordTxt;
-    document.getElementById('resultWord').className = `result-word ${type}`;
-    document.getElementById('resultSub').textContent = subTxt;
+    const cfg = winner === 'draw'
+      ? { type: 'draw', word: 'draw',   sub: "it's a draw" }
+      : winner === mySymbol
+        ? { type: 'win',  word: 'gg ez',  sub: 'you won!' }
+        : { type: 'lose', word: 'rekt',   sub: 'you lost' };
+    document.getElementById('resultWord').textContent = cfg.word;
+    document.getElementById('resultWord').className   = `result-word ${cfg.type}`;
+    document.getElementById('resultSub').textContent  = cfg.sub;
     showScreen('resultScreen');
   }
 
-  // ── Actions ────────────────────────────────────────────────────
-  function createNewGame() {
-    socket.emit('join-game', null);
+  // navigation helpers
+  function goWait(roomId) {
+    document.getElementById('waitRoomCode').textContent = roomId;
+    generateQRCode(roomId);         // <-- always called when creator waits
+    showScreen('waitScreen');
+    setStatus('waiting · ' + roomId, true);
   }
+
+  function goGame() {
+    document.getElementById('gameRoomCode').textContent = currentRoomId;
+    updateBoard();
+    updateTurnIndicators();
+    setGameMsg(isMyTurn ? 'your turn' : "opponent's turn", isMyTurn);
+    showScreen('gameScreen');
+    setStatus('playing · ' + currentRoomId, true);
+  }
+
+  // actions
+  function createNewGame()    { isCreator = true;  socket.emit('join-game', null); }
+  function cancelWait()       { isCreator = false; newGame(); }
 
   function joinExistingGame() {
     const val = document.getElementById('roomInput').value.trim();
     if (!val) { alert('Please enter a Room ID'); return; }
+    isCreator = false;
     socket.emit('join-game', val);
   }
 
-  function makeMove(cellIndex) {
-    if (!isMyTurn || gameBoard[cellIndex] !== null || !currentRoomId) return;
-    socket.emit('make-move', { roomId: currentRoomId, cellIndex });
+  function makeMove(i) {
+    if (!isMyTurn || gameBoard[i] !== null || !currentRoomId) return;
+    socket.emit('make-move', { roomId: currentRoomId, cellIndex: i });
   }
 
-  function playAgain() {
-    if (currentRoomId) socket.emit('reset-game', currentRoomId);
-  }
-
-  function cancelWait() {
-    newGame();
-  }
+  function playAgain() { if (currentRoomId) socket.emit('reset-game', currentRoomId); }
 
   function newGame() {
-    currentRoomId = null;
-    mySymbol      = null;
-    isMyTurn      = false;
-    gameBoard     = Array(9).fill(null);
+    currentRoomId = mySymbol = null;
+    isMyTurn = isCreator = false;
+    gameBoard = Array(9).fill(null);
     document.getElementById('roomInput').value = '';
     showScreen('joinScreen');
     setStatus('ready', true);
   }
 
-  // ── Socket events ──────────────────────────────────────────────
+  // socket
   socket.on('connect', () => {
     setStatus('ready', true);
-
-    // Auto-join from URL param
-    const params = new URLSearchParams(window.location.search);
-    const roomParam = params.get('room');
-    if (roomParam) socket.emit('join-game', roomParam);
+    const room = new URLSearchParams(location.search).get('room');
+    if (room) { isCreator = false; socket.emit('join-game', room); }
   });
 
   socket.on('disconnect', () => setStatus('disconnected', false));
@@ -660,33 +513,19 @@
     isMyTurn      = data.isYourTurn;
     gameBoard     = Array(9).fill(null);
 
-    // If we're the first player, go to wait screen so opponent can scan QR
-    if (!data.isYourTurn && mySymbol === 'X') {
-      // Creator waits → show wait screen with QR
-      document.getElementById('waitRoomCode').textContent = currentRoomId;
-      generateQRCode(currentRoomId);
-      showScreen('waitScreen');
-      setStatus('waiting · ' + currentRoomId, true);
+    // Use isCreator flag — not the symbol — to decide routing.
+    // This avoids the brittle "X goes first" assumption.
+    if (isCreator) {
+      goWait(currentRoomId);   // show QR while waiting
     } else {
-      // Joiner goes straight to game
-      document.getElementById('gameRoomCode').textContent = currentRoomId;
-      updateBoard();
-      updateTurnIndicators();
-      setGameMsg(isMyTurn ? 'your turn' : "opponent's turn", isMyTurn);
-      showScreen('gameScreen');
-      setStatus('playing · ' + currentRoomId, true);
+      goGame();                 // joiner goes straight in
     }
   });
 
-  socket.on('opponent-joined', (data) => {
-    // Creator: opponent arrived, hide wait screen, show game
-    isMyTurn = data.isYourTurn;
-    document.getElementById('gameRoomCode').textContent = currentRoomId;
-    updateBoard();
-    updateTurnIndicators();
-    setGameMsg(isMyTurn ? 'your turn' : "opponent's turn", isMyTurn);
-    showScreen('gameScreen');
-    setStatus('playing · ' + currentRoomId, true);
+  socket.on('opponent-joined', () => {
+    // server sends this to creator; isYourTurn is in game-start
+    // just move creator off wait screen
+    goGame();
   });
 
   socket.on('game-start', (data) => {
@@ -714,13 +553,8 @@
     gameBoard = Array(9).fill(null);
     if (data.mySymbol) mySymbol = data.mySymbol;
     isMyTurn = data.currentPlayer === mySymbol;
-    document.getElementById('gameRoomCode').textContent = currentRoomId;
-    updateBoard();
     enableBoard();
-    updateTurnIndicators();
-    setGameMsg(isMyTurn ? 'your turn' : "opponent's turn", isMyTurn);
-    showScreen('gameScreen');
-    setStatus('playing · ' + currentRoomId, true);
+    goGame();
   });
 
   socket.on('opponent-left', () => {
@@ -729,35 +563,25 @@
     setStatus('opponent left', false);
   });
 
-  socket.on('join-error', (data) => alert(data.message));
-  socket.on('move-error', (data) => console.warn(data.message));
+  socket.on('join-error',  d => alert(d.message));
+  socket.on('move-error',  d => console.warn(d.message));
 
-  // Enter key to join
-  document.getElementById('roomInput').addEventListener('keypress', (e) => {
+  document.getElementById('roomInput').addEventListener('keypress', e => {
     if (e.key === 'Enter') joinExistingGame();
   });
 
-  // ── Theme toggle ───────────────────────────────────────────────
+  // theme
   const root = document.documentElement;
   let isLight = localStorage.getItem('ttt-theme') === 'light';
 
   function applyTheme() {
-    if (isLight) {
-      root.classList.add('light');
-      document.getElementById('themeIcon').textContent = '●';
-      document.getElementById('themeLabel').textContent = 'dark';
-    } else {
-      root.classList.remove('light');
-      document.getElementById('themeIcon').textContent = '○';
-      document.getElementById('themeLabel').textContent = 'light';
-    }
+    root.classList.toggle('light', isLight);
+    document.getElementById('themeIcon').textContent  = isLight ? '●' : '○';
+    document.getElementById('themeLabel').textContent = isLight ? 'dark' : 'light';
     localStorage.setItem('ttt-theme', isLight ? 'light' : 'dark');
   }
 
-  function toggleTheme() {
-    isLight = !isLight;
-    applyTheme();
-  }
+  function toggleTheme() { isLight = !isLight; applyTheme(); }
 
   applyTheme();
 </script>
