@@ -19,13 +19,30 @@
       --border: #2a2a2a;
       --text: #d1d0c5;
       --muted: #646669;
-      --white: #e2e2e2;
+      --strong: #e2e2e2;
+      --copy-hint: #3a3a3a;
+      --turn-inactive: #2a2a2a;
+      --cell-bg: #0e0e0e;
       --font-mono: 'Roboto Mono', monospace;
       --font-display: 'Space Mono', monospace;
+      --transition-theme: background 0.25s, color 0.25s, border-color 0.25s;
+    }
+
+    :root.light {
+      --bg: #f0efeb;
+      --surface: #e4e3de;
+      --border: #c9c8c3;
+      --text: #3a3a35;
+      --muted: #8a8985;
+      --strong: #1a1a18;
+      --copy-hint: #b0afaa;
+      --turn-inactive: #c9c8c3;
+      --cell-bg: #f0efeb;
     }
 
     html, body {
       height: 100%;
+      transition: var(--transition-theme);
     }
 
     body {
@@ -62,11 +79,45 @@
       font-family: var(--font-display);
       font-size: 20px;
       font-weight: 700;
-      color: var(--white);
+      color: var(--strong);
       letter-spacing: -0.5px;
     }
 
     .logo span { color: var(--muted); }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      min-height: auto;
+      transition: border-color 0.15s, color 0.15s, background 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--muted);
+      color: var(--text);
+    }
+
+    .theme-toggle .icon {
+      font-size: 12px;
+      line-height: 1;
+    }
 
     .status-pill {
       font-size: 11px;
@@ -183,7 +234,7 @@
 
     .copy-link {
       font-size: 11px;
-      color: #3a3a3a;
+      color: var(--copy-hint);
       letter-spacing: 0.05em;
       cursor: pointer;
       transition: color 0.2s;
@@ -253,7 +304,7 @@
     }
 
     .turn-player {
-      color: var(--border);
+      color: var(--turn-inactive);
       transition: color 0.2s;
       padding-bottom: 3px;
       background: none;
@@ -303,7 +354,7 @@
 
     .cell:hover:not(:disabled):not(.filled) { background: var(--surface); }
     .cell:disabled { cursor: default; }
-    .cell.x-sym { color: var(--white); }
+    .cell.x-sym { color: var(--strong); }
     .cell.o-sym { color: var(--muted); }
 
     .game-msg {
@@ -333,8 +384,8 @@
       text-align: center;
     }
 
-    .result-word.win { color: var(--white); }
-    .result-word.lose { color: #2c2c2c; }
+    .result-word.win { color: var(--strong); }
+    .result-word.lose { color: var(--border); }
     .result-word.draw { color: var(--muted); }
 
     .result-sub {
@@ -376,7 +427,13 @@
 
   <div class="header">
     <div class="logo">ttt<span>.</span>io</div>
-    <div class="status-pill" id="statusPill">connecting</div>
+    <div class="header-right">
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+        <span class="icon" id="themeIcon">○</span>
+        <span id="themeLabel">light</span>
+      </button>
+      <div class="status-pill" id="statusPill">connecting</div>
+    </div>
   </div>
 
   <!-- ── Join screen ── -->
@@ -679,6 +736,30 @@
   document.getElementById('roomInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') joinExistingGame();
   });
+
+  // ── Theme toggle ───────────────────────────────────────────────
+  const root = document.documentElement;
+  let isLight = localStorage.getItem('ttt-theme') === 'light';
+
+  function applyTheme() {
+    if (isLight) {
+      root.classList.add('light');
+      document.getElementById('themeIcon').textContent = '●';
+      document.getElementById('themeLabel').textContent = 'dark';
+    } else {
+      root.classList.remove('light');
+      document.getElementById('themeIcon').textContent = '○';
+      document.getElementById('themeLabel').textContent = 'light';
+    }
+    localStorage.setItem('ttt-theme', isLight ? 'light' : 'dark');
+  }
+
+  function toggleTheme() {
+    isLight = !isLight;
+    applyTheme();
+  }
+
+  applyTheme();
 </script>
 </body>
 </html>
